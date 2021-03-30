@@ -1,0 +1,25 @@
+pre.prettyprint {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.codeblock {
+    background: #22222209;
+    border-radius: 8px;
+}
+
+iframe {
+    border: #222222 dashed 1px;
+    border-radius: 4px;
+}
+
+.math {
+    font-style: italic;
+    padding: 10px 0 10px 0;
+}
+
+.borders {
+    border: #222222 solid 1px;
+    padding: 1px;
+}

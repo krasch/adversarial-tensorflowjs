@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.2.0/dist/tf.min.js" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0" type="text/javascript"></script>
+
+    <script type="text/javascript" src="attack.js"></script>
+    <link rel="stylesheet" href="layout.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+  <div id="container">
+      <div class="column">
+          <div> Original </div>
+          <img src="images/flower.jpeg" width="224" id="original-image" alt="Picture of a flower"/>
+          <div id="original-text">&nbsp;</div>
+      </div>
+
+      <div class="column">
+          <div> Adversarial </div>
+          <canvas width="224" height="224" id="adversarial-image"></canvas>
+          <div id="adversarial-text">&nbsp;</div>
+      </div>
+  </div>
+  <input id="start-attack" type="button" value="Go!" onclick="{disableButton(); runAttack()}"/>
+
+  <script>
+      function disableButton(){
+        const button = document.getElementById("start-attack");
+        button.disabled = true;
+        console.log(button)
+      }
+  </script>
+</body>
+</html>

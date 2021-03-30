@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <link rel="stylesheet" href="layout.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://krasch.io/style.css">
+</head>
+<body>
+
+<h1> Projects </h1>
+<h2>[Draft] Generating adversarial images <br/> in the browser with tensorflow.js</h2>
+
+<h3> Introduction</h3>
+
+<p>This is not an intro to adversarial images. You should have an idea of what they are.
+    This blog post tells you how to do them in tensorflow.js.</p>
+
+<p>This is a bit more complex
+than some of the tutorials on the tensorflow.js website, showcasing some things
+    that people (in particular those coming over from doing ML in python) might find a bit complex.
+In particular will look at async stuff and memory management. And of course look
+    in depth at how to generate adversarials in javascript.</p>
+
+<p>If you are not looking for a deep dive on one particular method, but are looking for a javascript
+library that implements many different methods, then <a href="https://github.com/kennysong/adversarial.js">adversarial.js</a> by kennysong
+    has got you covered. </p>
+
+<h3> Live demo </h3>
+
+<p>Here is a live demo of the thing. It implements the Fast Gradient Sign method.
+    Standalone version can be found <a href="demo">here</a></p>
+
+<iframe scrolling="no" src="demo/index.html"></iframe>
+
+<p>If you just want to see the code, you can <a href="#code"> skip down</a> to the end of the page. Otherwise now starts
+    the deep dive.</p>
+
+<h3> Generating the adversarial </h3>
+
+<p>Here is the formula for the Targeted Fast Gradient Sign method <br/></p>
+
+<div class="math">
+adversarial = original - &epsilon; &times; sign(gradient<sub>original</sub>(loss(original, targetClass)))
+</div>
+
+The tricky part in implementing the Fast Gradient Sign method in tensorflow.js is figuring out how to get the gradient (it's
+in the name!). Below you can see how to define the loss wrt to an image and a target class. Then you can
+get a function that calculates you the gradient wrt to an image.
+
+<pre class="prettyprint">
+        <code class="language-js">
+            <div class="codeblock">
+    let targetClass = 0;
+    function loss(img){
+        let correctOneHot = tf.oneHot([targetClass], 1000);
+        let logits = model.infer(img);
+        return tf.losses.softmaxCrossEntropy(correctOneHot, logits);
+    }
+    let calculateGradient = tf.grad(loss);
+            </div>
+        </code>
+</pre>
+
+The rest is simple, we just write up the formula
+
+<pre class="prettyprint">
+        <code class="language-js">
+            <div class="codeblock">
+    const gradient = calculateGradient(originalImage);
+    const perturbation = gradient.sign().mul(epsilon);
+    let adversarial = tf.sub(originalImage, perturbation);
+
+    // pixel values must be between [0, 255]
+    adversarial = adversarial.clipByValue(0.0, 255);
+            </div>
+        </code>
+</pre>
+
+
+<h3> Memory management in tensorflow.js</h3>
+
+Tensorflow.js does not have automatic garbage collection. That means that any tensors you have allocated,
+you need to free (in tensorflow.js that is called dispose) when you are done with them. Otherwise you will
+get a memory leak, i.e. your webpage will use more and more memory and your users will be very unhappy.
+
+There is two ways to memory management:
+
+<h4> 1. Manually disposing unused tensors </h4>
+
+<pre class="prettyprint">
+        <code class="language-js">
+    <div class="codeblock">
+    const originalImageDOM = document.getElementById("original-image");
+    const originalTensor = tf.browser.fromPixels(originalImageDOM);
+    console.log(tf.memory().numBytes); // will output xx bytes
+
+    originalTensor.dispose();
+    console.log(tf.memory().numBytes); // will output 0 bytes
+    </div>
+        </code>
+</pre>
+
+This can become a bit cumbersome, in particular if you have do some inline calls when calling a function.
+Here is an example
+
+<pre class="prettyprint">
+        <code class="language-js">
+            <div class="codeblock">
+    // uhoh, the .div(255) generated a NEW tensor that you can't dispose
+    // you have a memory leak :-(
+    const adversarialImageDOM = document.getElementById("adversarial-image")
+    tf.browser.toPixels(adversarialTensorNormalized.div(255), adversarialImageDOM);
+
+    // you need to put the new tensor into a variable
+    // so that you can dispose it when you no longer need it
+    const adversarialTensorNormalized = adversarialTensor.div(255);
+    tf.browser.toPixels(adversarialTensorNormalized, adversarialImageDOM);
+            </div>
+        </code>
+</pre>
+
+
+<h4> 2. Using tf.tidy </h4>
+
+Syntax a bit weird. if you are familiar with context-managers in python: this is what this is.
+
+https://github.com/tensorflow/tfjs/blob/tfjs-v3.2.0/tfjs-core/src/engine.ts#L475
+
+<pre class="prettyprint">
+        <code class="language-js">
+   <div class="codeblock">
+   let result = tf.tidy(() => {
+     // todo rewrite the example above
+   }
+
+   // here is what this resolves to
+   // the original code uses try-catch,
+   // surely there is a reason for not using try, finally
+   startScope(); // starts tracking tensor creation
+   try {
+      const res = f();
+      endScope();  // dispose all the internal tensors
+      return res;
+   }
+   catch ex(){
+      endScope();
+      throw ex;
+   }
+   </div>
+        </code>
+</pre>
+
+
+
+
+<h3> Async execution</h3>
+
+<p>Stuff takes a long time. Browser can not lock, user would be unhappy. Await means: I need this information,
+but lets not wait around here, go do something else and call me back when you are done. Then execution will
+continue from there. It is a bit of a misnomer. There must be an async there, functions that await must
+    themselves be asynchronous.</p>
+
+<p>Bit confusing that in tensorflow.js you only need to await when you move from tensorland to javascript
+data type land. Tensors themselves have an internal async mechanism that you don't normally see. So you can do
+    operations on tensors and they will be async. Only when you want to get the underlying data, do you need to await.</p>
+
+<pre class="prettyprint">
+        <code class="language-js">
+   <div class="codeblock">
+   // todo check this code is correct
+   const originalImageDOM = document.getElementById("original-image");
+
+   // returns a javascript array
+   const originalPredictions = await model.classify(originalImageDOM);
+
+   // returns a tensor, needs no await
+   const scoresTensor = model.infer(originalImageDOM);
+
+   // but need to await if want to get javascript array representation of the tensor
+   await scoresTensor.data();
+   </div>
+        </code>
+</pre>
+
+
+<h3 id="code"> Code </h3>
+
+<p>
+    Now let's put all the bits together! The code listing below contains <strong>all</strong> the Javascript you need to generate
+    your own adversarial images. There are copious amounts of comments in the code, so it hopefully is easy to follow along.
+</p>
+
+<p>
+    You will need tensorflow.js (code is tested with version 3.2.0). Everything else is vanilla Javascript, no other
+    libraries are needed. <br/> <br/> You can find the HTML and CSS used in the live demo <a href="">on my github (todo).</a>
+</p>
+
+
+<pre class="prettyprint">
+        <code class="language-js">
+
+<div class="codeblock">
+// FGSM configuration; these values are cherry-picked
+// (FGSM is the not strongest attack, and the selected flower mostly
+//  turns into a vase, no matter what targetClass was selected)
+const targetClass = 883; // class ID for vase
+const epsilon = 5.0;   // strength of the perturbation
+
+// loaded model and attack function will be stored here
+let model = null;
+</div>
+
+<div class="codeblock">
+// just a simple helper function that takes a prediction dictionary from tensorflow.js
+// and formats it into a nice string
+function formatPrediction(prediction){
+    const roundedProbability = Math.round(prediction["probability"] * 100.0) / 100.0;
+    return prediction["className"] +" (" + roundedProbability + ")";
+}
+</div>
+
+<div class="codeblock">
+// perform a targeted Fast Gradient Sign method attack
+// trying to "turn" the original image into the given target class
+function targetedFGSM(model, originalImage, targetClass, epsilon){
+    // tf.grad expects a loss function that takes only one input: one (image) tensor
+    // however, we are interested in the cross-entropy loss with respect
+    // to an image AND the target class
+    // we get around by specifying the loss function inside the outer function (closure)
+    // this way the function has accesss to both the image as well as the target class
+    function loss(image){
+        let correctOneHot = tf.oneHot([targetClass], 1000);
+        let logits = model.infer(image);
+        return tf.losses.softmaxCrossEntropy(correctOneHot, logits);
+    }
+
+    // now we can initialise a function that calculates a gradient
+    // given the specified loss function
+    const calculateGradient = tf.grad(loss);
+
+    // tf.tidy automatically disposes all tensors that are not needed anymore
+    // (so we don't get memory leaks)
+    return tf.tidy(() => {
+            // let's get the gradient with respect to the original image
+            const gradient = calculateGradient(originalImage);
+
+            // apply the fast gradient sign method
+            const perturbation = gradient.sign().mul(epsilon);
+            let adversarial = tf.sub(originalImage, perturbation);
+
+            // pixel values must be between [0, 255]
+            adversarial = adversarial.clipByValue(0.0, 255);
+
+            return adversarial;
+        });
+
+
+}
+</div>
+
+<div class="codeblock">
+async function runAttack(){
+    // if this is the first time the button was clicked, we need to load the model
+    if (model === null)
+        model = await mobilenet.load();
+
+    // how much memory is tensorflow.js using before generating the adversarial image?
+    const initialMemoryUsage = tf.memory().numBytes;
+
+    // run the classifier on the original image
+    // the result is an array with the Top3 predictions
+    const originalImageDOM = document.getElementById("original-image");
+    const originalPredictions = await model.classify(originalImageDOM);
+
+    // lets write the highest-probable prediction onto the webpage
+    const originalTextDOM = document.getElementById("original-text");
+    originalTextDOM.innerHTML = formatPrediction(originalPredictions[0]);
+
+    // to generate the adversarial,
+    // we let tensorflow grab the image data from the <img> DOM element
+    // and then run the targetedFGSM function
+    const originalTensor = tf.browser.fromPixels(originalImageDOM);
+    const adversarialTensor = targetedFGSM(model, originalTensor, targetClass, epsilon);
+
+    // display the adversarial image on the webpage
+    // need to store the normalized tensor into a variable
+    // so we can dispose it later (avoid memory leaks)
+    const adversarialImageDOM = document.getElementById("adversarial-image")
+    const adversarialTensorNormalized = adversarialTensor.div(255);
+    tf.browser.toPixels(adversarialTensorNormalized, adversarialImageDOM);
+
+    // run the classifier on the generated adversarial image
+    const adversarialPredictions = await model.classify(adversarialTensor);
+
+    // and again write the highest-probable prediction onto the webpage
+    const adversarialDOM = document.getElementById("adversarial-text");
+    adversarialDOM.innerHTML = formatPrediction(adversarialPredictions[0]);
+
+    // clean up to avoid memory leaks
+    originalTensor.dispose();
+    adversarialTensor.dispose();
+    adversarialTensorNormalized.dispose();
+
+    // check if still have any memory leaks
+    const leakingMemory = tf.memory().numBytes - initialMemoryUsage;
+    console.log("Memory leakage: " + leakingMemory + " bytes");
+}
+</div>
+        </code>
+    </pre>
+
+<a href="/"> home </a>
+
+</body>
+</html>

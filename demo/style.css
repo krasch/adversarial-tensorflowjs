@@ -1,0 +1,25 @@
+body {
+    font-family: helvetica, arial, sans-serif;
+}
+
+img, canvas {
+    border: 1px solid #222;
+}
+
+input {
+	background-color: #222;
+	border-radius: 6px;
+    border: 0px;
+    outline: none;
+	cursor: pointer;
+
+	color: #ffffff;
+	font-size: 15px;
+	padding: 6px 24px;
+	text-decoration: none;
+}
+
+input:disabled {
+	background-color: #22222220;
+	cursor: auto;
+}

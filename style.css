@@ -1,25 +1,49 @@
-pre.prettyprint {
-    margin: 0;
-    padding: 0;
-    border: none;
+/* general font stuff */
+body {
+  font-family: helvetica, arial, sans-serif;
+  color: #222;
 }
 
-.codeblock {
-    background: #22222209;
-    border-radius: 8px;
+a {
+    color: #222;
 }
 
+/* justify text */
+p {
+   text-align: justify;
+}
+
+.left-aligned { /* helper-class used when text justification misbehaves when line is too short */
+    align-self: flex-start;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* highlight demo iframe */
 iframe {
-    border: #222222 dashed 1px;
+    border: #555 dashed 1px;
     border-radius: 4px;
 }
 
-.math {
-    font-style: italic;
-    padding: 10px 0 10px 0;
+/* source code formatting */
+pre {
+    background: #f8f8f8;
+    border-radius: 4px;
+    padding: 0 0 0 20px; /* instead of putting spaces before the code */
+    color: #222;
 }
 
-.borders {
-    border: #222222 solid 1px;
-    padding: 1px;
+.keyword {
+    color: #8d0b13;
+}
+
+.comment {
+    color: #555;
+}
+
+.inline-code {
+    font-size: 1rem;
+    font-family: monospace;
 }

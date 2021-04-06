@@ -5,7 +5,6 @@
     <title>Generating adversarial images in the browser with tensorflow.js</title>
     <link rel="stylesheet" href="layout.css">
     <link rel="stylesheet" href="style.css">
-    <!--link rel="stylesheet" href="style2.css"-->
 </head>
 <body>
 
@@ -13,7 +12,7 @@
 
 <p><i>Live demo + full code listing + some background on memory management and asynchronous execution in tensorflow.js. (April 2021)</i></p>
 
-<h3> Introduction</h3>
+<h2> Introduction</h2>
 
 <p> In this article, I'll demonstrate how to create adversarial images (i.e. images that fool neural networks into giving wrong
     classifications) using the JavaScript library <a href="https://www.tensorflow.org/js" target="_blank" rel="noopener noreferrer">tensorflow.js</a>. </p>
@@ -23,10 +22,10 @@
     tensorflow.js harbours some pitfalls that you might not be expecting, in particular if you are used to writing
     machine learning code in python.
 
-<p class="left-aligned"> Here is what will be covered in the article:
+<p> Here is what will be covered in the article:
    <ol>
        <li> <a href="#demo">A live demo that generates an adversarial image in your browser</a></li>
-       <li> <a href="#method">Implementing the Targeted Fast Gradient Sign method in tensorflow.js</a></li>
+       <li> <a href="#method">Targeted Fast Gradient Sign method in tensorflow.js</a></li>
        <li> <a href="#memory">Pitfall: Memory management</a></li>
        <li> <a href="#async">Pitfall: Asynchronous execution</a></li>
        <li> <a href="#code">Full code listing</a></li>
@@ -40,15 +39,17 @@
 library that implements several different methods, then <a href="https://github.com/kennysong/adversarial.js" target="_blank" rel="noopener noreferrer">adversarial.js</a> by kennysong
     has got you covered. </p>
 
-<h3 id="demo"> Live demo </h3>
+<h2 id="demo"> Live demo </h2>
 
-<p> <div class="left-aligned"> If you press the "Go" button in the demo below, your browser will execute a script that </div>
+<p> If you press the "Go" button in the demo below, your browser will execute a script that
 
     <ol>
      <li> Uses a neural network to classify the original image of the flower and displays the result </li>
      <li> Runs the attack on the original image and displays the resulting adversarial image </li>
      <li> Classifies the adversarial image and displays the result</li>
     </ol>
+
+</p>
 
 <p>
     <i id="referer1"> This demo (at the time of writing) works best in Chrome and should just take a few seconds to run. In other browsers
@@ -73,7 +74,7 @@ perturbation) does not fool humans (it is obviously still a flower), but is what
     you can <a href="#code"> skip down</a> to the end of the page.
 </p>
 
-<h3 id="method"> Implementing the Targeted Fast Gradient Sign method in tensorflow.js </h3>
+<h2 id="method"> Targeted Fast Gradient Sign method in tensorflow.js </h2>
 
 <!--div> $\mathit{adversarial} = \mathit{original} - \epsilon * \mathit{sign}(\triangledown_\mathit{original}(J(\mathit{original},\mathit{targetClass})))$<div-->
 <!--div> $\mathit{adversarial} = \mathit{original} - \underbrace{\epsilon * \mathit{sign}(\triangledown_\mathit{original}(J(\mathit{original},\mathit{targetClass})))}_{\textit{perturbation }}$ <!-->
@@ -91,11 +92,9 @@ perturbation) does not fool humans (it is obviously still a flower), but is what
 </p>
 
 
-<p>
-    <img id="targetedFGSM-formula" src="fgsm.svg" alt="SVG containing the formula for the targeted Fast Gradient Sign Method: adversarial = original - &epsilon; &times; sign(gradient_{original}(loss(original, targetClass)))"/>
-</p>
+<img id="targetedFGSM-formula" src="fgsm.svg" alt="SVG containing the formula for the targeted Fast Gradient Sign Method: adversarial = original - &epsilon; &times; sign(gradient_{original}(loss(original, targetClass)))"/>
 
-<p class="left-aligned">
+<p>
     A bit tricky to figure out is how to calculate the gradient with respect to an image in tensorflow.js:
 </p>
 
@@ -119,7 +118,7 @@ perturbation) does not fool humans (it is obviously still a flower), but is what
         </code>
 </pre>
 
-<p class="left-aligned">Once we have the gradient function defined, we can directly implement the attack using the
+<p>Once we have the gradient function defined, we can directly implement the attack using the
     formula from above:</p>
 
 <pre>
@@ -139,7 +138,7 @@ adversarial = adversarial.clipByValue(0, 255);
 </pre>
 
 
-<h3 id="memory"> Pitfall: Memory management</h3>
+<h2 id="memory"> Pitfall: Memory management</h2>
 
 <p>
     Usually when programming in JavaScript (or Python), there is no need to care at all about memory management. The
@@ -186,7 +185,7 @@ Outputs:
     even get a warning from their browser that there is a website hogging all their memory, urging them to stop your script.
 Embarrassing. </p>
 
-<h4 class="left-aligned"> a) Manually disposing tensors </h4>
+<h3> a) Manually disposing tensors </h3>
 
 <p> The first way to fix the situation is to let tensorflow.js know that you no longer need a tensor by calling the
     <span class="inline-code">.dispose()</span> method on the tensor:</p>
@@ -239,7 +238,7 @@ originalTensorNormalized.dispose();
 </pre>
 
 
-<h4 class="left-aligned"> b) Disposing tensors using tf.tidy </h4>
+<h3> b) Disposing tensors using tf.tidy </h3>
 
 <p>Alternatively to manually disposing all tensors, you can also wrap your code in a <span class="inline-code">tf.tidy</span> function call:</p>
 
@@ -291,7 +290,7 @@ startScope(); <span class="comment">// starts tracking tensor creation</span>
 </pre>
 
 
-<h3 id="async"> Pitfall: Asynchronous execution</h3>
+<h2 id="async"> Pitfall: Asynchronous execution</h2>
 
 <p>
     In the live demo, the generation of the adversarial takes a few seconds or more to run. The problem is that
@@ -368,7 +367,7 @@ adversarial = adversarial.dataSync();   <span class='comment'>// option2: tensor
 </pre>
 
 
-<h3 id="code"> Full code listing </h3>
+<h2 id="code"> Full code listing </h2>
 
 <p>
     Now let's put all the bits together! The code listing below contains <strong>all</strong> the Javascript you need to generate
@@ -494,14 +493,16 @@ adversarial = adversarial.dataSync();   <span class='comment'>// option2: tensor
         </code>
     </pre>
 
-<h3> Footnotes </h3>
+<h2> Footnotes </h2>
 
 <p id="footnote1">[1] tensorflow.js uses WebGL (Web Graphics Library) for GPU acceleration, where possible. It seems that at the time
     of writing this works only in Chrome, on other browsers tensorflow.js is running without GPU acceleration.
     <a href="#referer1">[back]</a>
 </p>
 
-<h3><a href="https://krasch.io">home to krasch.io </a> </h3>
+<p class="footer">
+    <h2><a href="https://krasch.io">home to krasch.io </a> </h2>
+</p>
 
 </body>
 </html>

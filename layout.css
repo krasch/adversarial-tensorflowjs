@@ -2,8 +2,8 @@
 body {
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin: 3rem auto 3rem auto;
+    align-items: center;
     width: 45rem;
 }
 
@@ -22,6 +22,8 @@ pre {
 /* height of the SVG formula */
 #targetedFGSM-formula {
     height: 3rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 
@@ -35,4 +37,8 @@ p {
 ol {
     align-self: flex-start;
     margin-left: 2rem;
+}
+
+#footer {
+    margin-top: 2rem;
 }

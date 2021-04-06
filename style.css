@@ -10,15 +10,17 @@ a {
 
 /* justify text */
 p {
+   align-self: flex-start; /* centering does not work well with justify */
    text-align: justify;
 }
 
-.left-aligned { /* helper-class used when text justification misbehaves when line is too short */
-    align-self: flex-start;
+h1, h2 {
+    text-align: center;
 }
 
-h1 {
-    text-align: center;
+h3 {
+    align-self: flex-start;
+    text-align: left;
 }
 
 /* highlight demo iframe */

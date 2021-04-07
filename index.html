@@ -104,6 +104,7 @@ perturbation) does not fool humans (it is obviously still a flower), but is what
 <span class='comment'>// tf.grad expects a loss function that takes only one input: one (image) tensor</span>
 <span class='comment'>// however, we want the cross-entropy loss with respect to an image AND the target class</span>
 <span class='comment'>// we get around this by specifying the target class outside the loss function</span>
+<span class='comment'>// that way it is still in scope within the loss function</span>
 <span class='keyword'>function</span> loss(image){
    <span class='keyword'>let</span> targetOneHot = tf.oneHot([targetClass], 1000);
    <span class='keyword'>let</span> logits = model.infer(image);
@@ -350,6 +351,9 @@ adversarial = adversarial.dataSync();   <span class='comment'>// option2: tensor
         </code>
 </pre>
 
+<p>If you are interested, you can read more about asynchronous operations in JavaScript
+    <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous"
+     target="_blank" rel="noopener noreferrer">here</a>.</p>
 
 <h2 id="code"> Full code listing </h2>
 

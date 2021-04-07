@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div>
 
 <h1>Generating adversarial images <br/> in the browser with tensorflow.js</h1>
 
@@ -91,9 +90,7 @@ perturbation) does not fool humans (it is obviously still a flower), but is what
     of the original image, so that the loss decreases:
 </p>
 
-<div id="targetedFGSM-formula">
-    <img src="fgsm.svg" alt="SVG containing the formula for the targeted Fast Gradient Sign Method: adversarial = original - &epsilon; &times; sign(gradient_{original}(loss(original, targetClass)))"/>
-</div>
+<img id="targetedFGSM-formula" src="fgsm.svg" alt="SVG containing the formula for the targeted Fast Gradient Sign Method: adversarial = original - &epsilon; &times; sign(gradient_{original}(loss(original, targetClass)))"/>
 
 <p>
     A bit tricky to figure out is how to calculate the gradient with respect to an image in tensorflow.js:
@@ -505,6 +502,5 @@ adversarial = adversarial.dataSync();   <span class='comment'>// option2: tensor
     <h2><a href="https://krasch.io">home </a> </h2>
 </div>
 
-</div>
 </body>
 </html>

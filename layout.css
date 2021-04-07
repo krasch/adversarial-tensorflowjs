@@ -1,19 +1,7 @@
 /* horizontally center the page */
 body {
-    display: flex;
-    flex-direction: column;
     margin: 3rem auto 3rem auto;
 }
-
-
-/* on larger devices: whitespace left and right of center column
-  (on smaller devices page will be full width) */
-@media (min-width: 45rem) {
-    body {
-        width: 45rem;
-    }
-}
-
 
 iframe {
     width: 100%;
@@ -32,14 +20,11 @@ pre {
 
 /* SVG formula */
 #targetedFGSM-formula {
+    /* centering */
     width: 100%;
-    display: flex;
-    align-items: center;
-}
+    alignment: center;
 
-#targetedFGSM-formula > img {
     height: 3rem;
-    width: 100%; /* for centering to work */
     margin-top: 1rem;
     margin-bottom: 1rem;
 }

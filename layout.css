@@ -2,10 +2,19 @@
 body {
     display: flex;
     flex-direction: column;
-    margin: 3rem auto 3rem auto;
     align-items: center;
-    width: 45rem;
+    margin: 3rem auto 3rem auto;
 }
+
+
+/* on larger devices: whitespace left and right of center column
+  (on smaller devices page will be full width) */
+@media (min-width: 45rem) {
+    body {
+        width: 45rem;
+    }
+}
+
 
 iframe {
     width: 100%;
@@ -41,4 +50,9 @@ ol {
 
 #footer {
     margin-top: 2rem;
+}
+
+/* headlines have too many line breaks on small devices if not doing this */
+h1, h2, h3 {
+    width: 100%;
 }

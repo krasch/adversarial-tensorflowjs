@@ -53,7 +53,7 @@ library that implements several different methods, then <a href="https://github.
 
 <p>
     <i id="referer1"> This demo (at the time of writing) works best in Chrome and should just take a few seconds to run. In other browsers
-        it might take several minutes <a href="#footnote1">[1]</a>. There is also a standalone version of the demo, which
+        it might take longer than that <a href="#footnote1">[1]</a>. There is also a standalone version of the demo, which
         you can find <a href="demo" target="_blank" rel="noopener noreferrer">here</a>.
     </i>
 </p>
@@ -337,8 +337,8 @@ console.log(originalPredictions);
 </pre>
 
 <p>
-    Be aware that you only need to take care of using <span class="inline-code">await</span>, when you
-    are moving data from "tensorland" to native JavaScript types. You don't need to <span class="inline-code">await</span>,
+    Be aware that you only need to take care of using <span class="inline-code">await</span> when you
+    are moving data from "tensorland" to native JavaScript types. You don't need to <span class="inline-code">await</span>
     if you are doing operations on tensors that return other tensors:
 </p>
 

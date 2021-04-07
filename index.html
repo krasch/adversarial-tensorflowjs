@@ -103,7 +103,7 @@ perturbation) does not fool humans (it is obviously still a flower), but is what
 
 <span class='comment'>// tf.grad expects a loss function that takes only one input: one (image) tensor</span>
 <span class='comment'>// however, we want the cross-entropy loss with respect to an image AND the target class</span>
-<span class='comment'>// we get around by specifying the loss function outside the loss function</span>
+<span class='comment'>// we get around this by specifying the target class outside the loss function</span>
 <span class='keyword'>function</span> loss(image){
    <span class='keyword'>let</span> targetOneHot = tf.oneHot([targetClass], 1000);
    <span class='keyword'>let</span> logits = model.infer(image);
@@ -145,9 +145,9 @@ adversarial = adversarial.clipByValue(0, 255);
 </p>
 
 <p>
-    Things are different when using tensorflow.js. The tensors allocated by the library are not automatically
-    garbage collected by the JavaScript engine. For example, let's try creating new tensors in a loop and
-    printing info on how much main memory is allocated by tensorflow.js:
+    If you allocate a tensor in tensorflow.js, however, this does not happen automatically. Instead, tensorflow.js
+    will keep the tensor for you until you tell it to let go of it. For example, let's try creating new tensors in a
+    loop and printing info on how much main memory is allocated by tensorflow.js:
 </p>
 
 <pre>
@@ -297,21 +297,7 @@ startScope(); <span class="comment">// starts tracking tensor creation</span>
 </p>
 
 <p>
-    To understand how we can avoid website freezes from happening, let's get away from thinking about tasks like classifying an image
-    as these long-running, un-interruptable operations. Sure, when calling <span class="inline-code">
-    model.classify</span> we only see that one function call. But behind the scenes, in the library, what is actually
-    executed is a sequence of many tiny operations.
-</p>
-
-<p>
-    Since tensorflow.js is implemented for asynchronous execution, the JavaScript engine can interrupt the execution
-    of the classification task at any point between these operations, handle other tasks (e.g. user interaction) and
-    resume the classification task when possible. This way, the execution appears to be happening in parallel and the
-    website remains responsive, even though there is still only one thread running.
-</p>
-
-<p>
-    Now, let's have a look at what the asynchronous nature of tensorflow.js means when we want to use the library:
+    To avoid that from happening,  tensorflow.js is implemented for asynchronous execution:
 </p>
 
 

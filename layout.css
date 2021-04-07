@@ -2,7 +2,6 @@
 body {
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin: 3rem auto 3rem auto;
 }
 
@@ -25,20 +24,25 @@ iframe {
 
 pre {
     width: 100%;
-    align-self: flex-start;
 
     /* code starts only at 20px, borderbox to keep to 100% width */
     padding: 0 0 0 20px;
     box-sizing: border-box;
 }
 
-/* height of the SVG formula */
+/* SVG formula */
 #targetedFGSM-formula {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#targetedFGSM-formula > img {
     height: 3rem;
+    width: 100%; /* for centering to work */
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-
 
 /* less space at top and bottom of paragraph */
 p {
@@ -48,7 +52,6 @@ p {
 
 /* ordered lists should all start at same x location */
 ol {
-    align-self: flex-start;
     margin-left: 2rem;
 }
 

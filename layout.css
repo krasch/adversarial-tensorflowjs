@@ -26,6 +26,10 @@ iframe {
 pre {
     width: 100%;
     align-self: flex-start;
+
+    /* code starts only at 20px, borderbox to keep to 100% width */
+    padding: 0 0 0 20px;
+    box-sizing: border-box;
 }
 
 /* height of the SVG formula */

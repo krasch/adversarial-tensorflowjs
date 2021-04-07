@@ -38,7 +38,6 @@ iframe {
 pre {
     background: #f8f8f8;
     border-radius: 4px;
-    padding: 0 0 0 20px; /* instead of putting spaces before the code */
     color: #222;
 }
 

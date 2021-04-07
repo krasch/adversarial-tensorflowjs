@@ -22,15 +22,15 @@
     tensorflow.js harbours some pitfalls that you might not be expecting, in particular if you are used to writing
     machine learning code in python.
 
-<p> Here is what will be covered in the article:
-   <ol>
-       <li> <a href="#demo">A live demo that generates an adversarial image in your browser</a></li>
-       <li> <a href="#method">Targeted Fast Gradient Sign method in tensorflow.js</a></li>
-       <li> <a href="#memory">Pitfall: Memory management</a></li>
-       <li> <a href="#async">Pitfall: Asynchronous execution</a></li>
-       <li> <a href="#code">Full code listing</a></li>
-  </ol>
-</p>
+<p> Here is what will be covered in the article: </p>
+<ol>
+   <li> <a href="#demo">A live demo that generates an adversarial image in your browser</a></li>
+   <li> <a href="#method">Targeted Fast Gradient Sign method in tensorflow.js</a></li>
+   <li> <a href="#memory">Pitfall: Memory management</a></li>
+   <li> <a href="#async">Pitfall: Asynchronous execution</a></li>
+   <li> <a href="#code">Full code listing</a></li>
+</ol>
+
 
 <p>
     This article is not an introduction to adversarial images, so if you aren't familiar yet with the topic,
@@ -41,15 +41,14 @@ library that implements several different methods, then <a href="https://github.
 
 <h2 id="demo"> Live demo </h2>
 
-<p> If you press the "Go" button in the demo below, your browser will execute a script that
+<p>If you press the "Go" button in the demo below, your browser will execute a script that:</p>
 
-    <ol>
-     <li> Uses a neural network to classify the original image of the flower and displays the result </li>
-     <li> Runs the attack on the original image and displays the resulting adversarial image </li>
-     <li> Classifies the adversarial image and displays the result</li>
-    </ol>
+<ol>
+ <li> Uses a neural network to classify the original image of the flower and displays the result </li>
+ <li> Runs the attack on the original image and displays the resulting adversarial image </li>
+ <li> Classifies the adversarial image and displays the result</li>
+</ol>
 
-</p>
 
 <p>
     <i id="referer1"> This demo (at the time of writing) works best in Chrome and should just take a few seconds to run. In other browsers
@@ -60,7 +59,7 @@ library that implements several different methods, then <a href="https://github.
 
 <iframe scrolling="no" src="demo/index.html"></iframe>
 
-<p> If you look closely, you will see some noisy artifacts in the generated adversarial image. This noise (called
+<p>If you look closely, you will see some noisy artifacts in the generated adversarial image. This noise (called
 perturbation) does not fool humans (it is obviously still a flower), but is what fools the neural network into classifying
     the image as a vase. </p>
 

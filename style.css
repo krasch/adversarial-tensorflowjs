@@ -11,8 +11,7 @@ a {
 /* justify text */
 p {
    align-self: flex-start; /* centering does not work well with justify */
-   /*text-align: justify;*/
-   text-align: left;
+   text-align: justify;
 }
 
 h1, h2 {

@@ -1,6 +1,7 @@
 /* horizontally center the page */
 body {
     margin: 3rem auto 3rem auto;
+    width: 45rem;
 }
 
 iframe {

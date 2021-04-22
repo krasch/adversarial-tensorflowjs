@@ -2,6 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Tutorial on generating adversarial images in the browser with tensorflow.js -
+    Live demo + full code listing + some background on memory management and asynchronous execution in tensorflow.js" />
+
+    <meta name="twitter:card" content="Generating adversarial images in the browser with tensorflow.js" />
+    <meta name="twitter:site" content="@krasch_io" />
+    <meta name="twitter:creator" content="@krasch_io" />
+    <meta property="og:url" content="https://krasch.io/adversarial-tensorflowjs/" />
+    <meta property="og:title" content="Generating adversarial images in the browser with tensorflow.js" />
+    <meta property="og:description" content="Tutorial on generating adversarial images in the browser with tensorflow.js -
+    Live demo + full code listing + some background on memory management and asynchronous execution in tensorflow.js" />
+    <meta property="og:image" content="https://krasch.io/adversarial-tensorflowjs/screenshot.png" />
+
     <title>Generating adversarial images in the browser with tensorflow.js</title>
     <link rel="stylesheet" href="layout.css">
     <link rel="stylesheet" href="style.css">
@@ -16,10 +29,10 @@
 
 <h2> Introduction</h2>
 
-<p> In this article, I'll demonstrate how to create adversarial images (i.e. images that fool neural networks into giving wrong
+<p> In this tutorial, I'll demonstrate how to create adversarial images (i.e. images that fool neural networks into giving wrong
     classifications) using the JavaScript library <a href="https://www.tensorflow.org/js" target="_blank" rel="noopener noreferrer">tensorflow.js</a>. </p>
 
-<p> For this article I chose the Fast Gradient Sign Method &mdash; one of the first published methods for generating
+<p> For this tutorial I chose the Fast Gradient Sign Method &mdash; one of the first published methods for generating
     adversarial images and one that is pretty straightforward to implement. Nonetheless, writing it in
     tensorflow.js harbours some pitfalls that you might not be expecting, in particular if you are used to writing
     machine learning code in python.
@@ -35,7 +48,7 @@
 
 
 <p>
-    This article is not an introduction to adversarial images, so if you aren't familiar yet with the topic,
+    This tutorial is not an introduction to adversarial images, so if you aren't familiar yet with the topic,
     you might want to read <a href="https://gradientscience.org/intro_adversarial/" target="_blank" rel="noopener noreferrer">this blog post</a> first.
     If you are not interested in implementing adversarial attacks yourself, but are looking for a JavaScript
 library that implements several different methods, then <a href="https://github.com/kennysong/adversarial.js" target="_blank" rel="noopener noreferrer">adversarial.js</a> by kennysong

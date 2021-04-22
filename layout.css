@@ -51,3 +51,7 @@ ol {
 h1, h2, h3 {
     width: 100%;
 }
+
+#about {
+    text-align: center;
+}

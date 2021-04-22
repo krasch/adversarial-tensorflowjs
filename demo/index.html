@@ -25,12 +25,15 @@
           <div id="adversarial-text">&nbsp;</div>
       </div>
   </div>
-  <input id="start-attack" type="button" value="Go!" onclick="{disableButton(); runAttack()}"/>
+  <input id="start-attack" type="button" value="Go!" onclick="run()"/>
 
   <script>
-      function disableButton(){
-        const button = document.getElementById("start-attack");
-        button.disabled = true;
+      function run(){
+          const button = document.getElementById("start-attack");
+          button.disabled = true;
+          button.value = "running...";
+
+          runAttack().then(() => button.value="done :-)").catch(() => button.value="failed :-(")
       }
   </script>
 </body>
